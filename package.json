@@ -1,0 +1,14 @@
+{
+  "name": "qia",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Diego da Silva Santos Machado",
+  "dependencies": {
+    "@slack/bolt": "^4.4.0",
+    "dotenv": "^16.5.0",
+    "openai": "^5.5.1"
+  }
+}
