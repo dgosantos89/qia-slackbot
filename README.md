@@ -61,7 +61,7 @@ How to get these values:
 4. Run the Application
 Start the bot with the following command. The default port is 3000.
 ```
-node index.js
+npm start
 ```
 You should see a confirmation message in your console:
 ```
