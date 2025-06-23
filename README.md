@@ -82,4 +82,5 @@ Example:
 
 The bot will process the prompt and reply with its analysis and suggestions in the same channel.
 
-![QiA_response](https://github.com/user-attachments/assets/daee2faf-73c3-4fba-bd88-f77e6042062e)
+![QiA_response](https://github.com/user-attachments/assets/47d2b8cb-1c8d-4c20-a7d4-42ada0eaa2d4)
+
