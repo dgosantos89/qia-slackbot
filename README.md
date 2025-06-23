@@ -4,6 +4,9 @@ QiA is a Slack bot designed to act as a dedicated Quality Assurance partner for 
 
 When you mention `@QiA` in a channel, it leverages a powerful language model to provide expert insights on quality engineering topics.
 
+![image](https://github.com/user-attachments/assets/ee76ba27-bb4f-4417-b033-96dc07ba0d27)
+
+
 ## Getting Started
 Follow these instructions to get your own instance of the QiA bot up and running.
 
