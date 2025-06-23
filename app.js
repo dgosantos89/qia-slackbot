@@ -23,17 +23,31 @@ const app = new App({
   port: 3000
 });
 
-// Routing logic based on prompt prefix
-function detectAgent(prompt) {
-  const lower = prompt.toLowerCase();
-  if (lower.startsWith('scenario:')) return 'scenario-writer';
+// Decide which agent is most appropriate
+async function routeToAgent(userPrompt) {
+  const routingPrompt = fs.readFileSync(path.join(__dirname, 'agents', 'router.md'), 'utf8');
+
+  const response = await openai.chat.completions.create({
+    model: process.env.OPENROUTER_MODEL,
+    messages: [
+      { role: 'system', content: routingPrompt },
+      { role: 'user', content: userPrompt }
+    ]
+  });
+
+  const agent = response.choices[0].message.content.trim();
+
+  if (agent === 'scenario-writer' || agent === 'strategist') {
+    return agent;
+  }
+
+  console.warn('[Router Fallback] Unknown agent returned, using strategist.');
   return 'strategist';
 }
 
-async function processPrompt(rawPrompt) {
-  const agent = detectAgent(rawPrompt);
+async function processPrompt(userPrompt) {
+  const agent = await routeToAgent(userPrompt);
   const systemPrompt = fs.readFileSync(path.join(__dirname, 'agents', `${agent}.md`), 'utf8');
-  const userPrompt = rawPrompt.replace(/^\w+:\s*/, '').trim();
 
   console.info('[Agent Selected]:', agent);
 
@@ -51,8 +65,8 @@ async function processPrompt(rawPrompt) {
 // Handle @QiA mentions in channels
 app.event('app_mention', async ({ event, say }) => {
   try {
-    const rawPrompt = event.text.replace(/<@[^>]+>/, '').trim();
-    const reply = await processPrompt(rawPrompt);
+    const userPrompt = event.text.replace(/<@[^>]+>/, '').trim();
+    const reply = await processPrompt(userPrompt);
     await say(reply);
   } catch (error) {
     console.error('Error in @mention:', error);
@@ -66,8 +80,8 @@ app.message(async ({ message, say }) => {
     // Just Inbox Messages
     if (message.channel_type !== 'im') return;
 
-    const rawPrompt = message.text.trim();
-    const reply = await processPrompt(rawPrompt);
+    const userPrompt = message.text.trim();
+    const reply = await processPrompt(userPrompt);
     await say(reply);
   } catch (error) {
     console.error('Error in DM:', error);
