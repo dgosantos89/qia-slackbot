@@ -4,6 +4,7 @@ const OpenAI = require('openai');
 const fs = require('fs');
 const path = require('path');
 
+const ERROR_MESSAGE = 'Sorry, something went wrong while processing your message.';
 
 // Initialize OpenRouter via OpenAI SDK
 const openai = new OpenAI({
@@ -67,10 +68,16 @@ app.event('app_mention', async ({ event, say }) => {
   try {
     const userPrompt = event.text.replace(/<@[^>]+>/, '').trim();
     const reply = await processPrompt(userPrompt);
-    await say(reply);
+    await say({
+      text: reply,
+      thread_ts: event.thread_ts || event.ts
+    });
   } catch (error) {
     console.error('Error in @mention:', error);
-    await say('Sorry, something went wrong while processing your message.');
+    await say({
+      text: ERROR_MESSAGE,
+      thread_ts: event.thread_ts || event.ts
+    });
   }
 });
 
@@ -82,10 +89,16 @@ app.message(async ({ message, say }) => {
 
     const userPrompt = message.text.trim();
     const reply = await processPrompt(userPrompt);
-    await say(reply);
+    await say({
+      text: reply,
+      thread_ts: message.thread_ts || message.ts
+    });
   } catch (error) {
     console.error('Error in DM:', error);
-    await say('Sorry, something went wrong while processing your direct message.');
+    await say({
+      text: ERROR_MESSAGE,
+      thread_ts: message.thread_ts || message.ts
+    });
   }
 });
 
