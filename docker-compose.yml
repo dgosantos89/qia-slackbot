@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  qia:
+    build: .
+    container_name: qia-bot
+    environment:
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL}
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    working_dir: /app
+    restart: unless-stopped
